@@ -18,7 +18,7 @@ services:
     - NET_ADMIN
     image: wangyucn/udp2raw-tunnel
     container_name: udp2raw
-    entrypoint: udp2raw_dynamic -s -l0.0.0.0:65534 -r 172.22.0.2:1194  -a -k "passwd" --raw-mode faketcp
+    entrypoint: udp2raw_dynamic -s -l0.0.0.0:65534 -r 172.22.0.2:1194  -a -k "passwd" --raw-mode faketcp   --cipher-mode xor
     networks:
       app_net:
         ipv4_address: 172.22.0.3
