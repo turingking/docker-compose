@@ -1,4 +1,4 @@
-version: '3'
+version: '2'
 services:
   openvpn:
     cap_add:
@@ -13,30 +13,31 @@ services:
     restart: always
     volumes:
     - ./openvpn-data/conf:/etc/openvpn
-  udp2raw_server:
+  udp2raw:
     cap_add:
     - NET_ADMIN
     image: wangyucn/udp2raw-tunnel
-    container_name: udp2raw_server
-    entrypoint: udp2raw_dynamic -s -l0.0.0.0:65535 -r 172.22.0.2:1194  -a -k "passwd" --raw-mode faketcp
+    container_name: udp2raw
+    entrypoint: udp2raw_dynamic -s -l0.0.0.0:65534 -r 172.22.0.2:1194  -a -k "passwd" --raw-mode faketcp
     networks:
       app_net:
         ipv4_address: 172.22.0.3
     ports:
-    - "65535:65535/udp"
-    - "65535:65535/tcp"
+    - "65534:65534/udp"
+    - "65534:65534/tcp"
     restart: always
-  udp2raw_client:
+  udpspeeder:
     cap_add:
     - NET_ADMIN
-    image: wangyucn/udp2raw-tunnel
-    container_name: udp2raw_client
-    entrypoint: udp2raw_dynamic -c -l0.0.0.0:65534  -r172.22.0.3:65535 -a -k "passwd" --raw-mode faketcp
+    image: turingking/udpspeeder
+    container_name: udpspeeder
+    entrypoint: speederv2_amd64 -s -l0.0.0.0:65535 -r172.22.0.3:65534 -k "passwd"  -f2:4 --timeout 0
     networks:
       app_net:
         ipv4_address: 172.22.0.4
     ports:
-    - "65534:65534/udp"
+    - "65535:65535/udp"
+    - "65535:65535/tcp"
     restart: always
 networks:
   app_net:
