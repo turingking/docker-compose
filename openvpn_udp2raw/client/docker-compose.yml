@@ -6,8 +6,8 @@ services:
         #    image: kylemanna/openvpn
         #    container_name: openvpn
         #    networks:
-        #      app_net:
-        #        ipv4_address: 172.22.0.2
+        #      my_net:
+        #        ipv4_address: 172.25.0.2
         #    ports:
         #    - "1194:1194/udp"
         #    restart: always
@@ -18,10 +18,10 @@ services:
     - NET_ADMIN
     image: turingking/udpspeeder
     container_name: udpspeeder
-    entrypoint: speederv2_amd64 -c -l0.0.0.0:65534 -r104.199.176.45:65535 -k "passwd"  -f2:4 --timeout 0
+    entrypoint: speederv2_amd64 -c -l0.0.0.0:65534 -r172.25.0.3:65535 -k "passwd"  -f2:4 --timeout 0
     networks:
-      app_net:
-        ipv4_address: 172.22.0.4
+      my_net:
+        ipv4_address: 172.25.0.4
     ports:
     - "65534:65534/udp"
     - "65534:65534/tcp"
@@ -31,19 +31,19 @@ services:
     - NET_ADMIN
     image: wangyucn/udp2raw-tunnel
     container_name: udp2raw
-    entrypoint: udp2raw_dynamic -c -l0.0.0.0:65535  -r172.22.0.4:65534 -a -k "passwd" --raw-mode faketcp   --cipher-mode xor
+    entrypoint: udp2raw_dynamic -c -l0.0.0.0:65535  -r104.199.192.145:65535 -a -k "passwd" --raw-mode faketcp   --cipher-mode xor
     networks:
-      app_net:
-        ipv4_address: 172.22.0.3
+      my_net:
+        ipv4_address: 172.25.0.3
     ports:
     - "65535:65535/udp"
     - "65535:65535/tcp"
     restart: always
 networks:
-  app_net:
+  my_net:
     driver: bridge
     ipam:
       driver: default
       config:
-      - subnet: 172.22.0.0/24 
+      - subnet: 172.25.0.0/24 
 
