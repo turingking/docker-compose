@@ -1,0 +1,13 @@
+version: '2'
+
+services:
+  ssr:
+    image: turingking/shadowsocksr
+    environment:
+      SERVER_PORT: 65535
+      PASSWORD: 13789456
+      METHOD: aes-256-cfb
+      PROTOCOL: origin
+      TIMEOUT: 300
+      OBFS: plain
+
