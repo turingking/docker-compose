@@ -4,7 +4,7 @@ services:
   ssr:
     image: turingking/shadowsocksr
     ports: 
-      - "65534":"65535"
+      - "65534:65535"
     environment:
       SERVER_PORT: 65535
       PASSWORD: 13789456
