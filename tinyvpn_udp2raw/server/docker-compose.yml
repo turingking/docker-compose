@@ -1,0 +1,20 @@
+version: '2'
+services:
+  tinyvpn:
+    cap_add:
+    - NET_ADMIN
+    image: turingking/tinyvpn
+    container_name: tinyvpn
+    entrypoint: -s -l0.0.0.0:4096 -f20:10 -k "passwd" --sub-net 10.22.22.0
+    ports:
+    restart: always
+
+  udp2raw:
+    cap_add:
+    - NET_ADMIN
+    image: turingking/udp2raw
+    container_name: udp2raw
+    entrypoint: -s -l0.0.0.0:65534 -r tinyvpn:4096  -a -k "passwd" --raw-mode faketcp   --cipher-mode xor
+    ports:
+    - "65534:65534"
+    restart: always
