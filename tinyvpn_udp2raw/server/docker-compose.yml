@@ -5,8 +5,12 @@ services:
     - NET_ADMIN
     image: turingking/tinyvpn
     container_name: tinyvpn
-    entrypoint: -s -l0.0.0.0:4096 -f20:10 -k "passwd" --sub-net 10.22.22.0
-    ports:
+    networks:
+      app_net:
+        ipv4_address: 172.22.0.2
+    devices:
+    - "/dev/net/tun:/dev/net/tun"
+    entrypoint: ./tinyvpn -s -l0.0.0.0:4096 -f20:10 -k "passwd" --sub-net 10.22.22.0
     restart: always
 
   udp2raw:
@@ -14,7 +18,21 @@ services:
     - NET_ADMIN
     image: turingking/udp2raw
     container_name: udp2raw
-    entrypoint: -s -l0.0.0.0:65534 -r tinyvpn:4096  -a -k "passwd" --raw-mode faketcp   --cipher-mode xor
+    links:
+    - tinyvpn
     ports:
-    - "65534:65534"
+    - "65534:65534/tcp"
+    - "65534:65534/udp"
+    networks:
+      app_net:
+        ipv4_address: 172.22.0.3
+    entrypoint: ./udp2raw -s -l0.0.0.0:65534 -r 172.22.0.2:4096  -a -k "passwd" --raw-mode faketcp   --cipher-mode xor
     restart: always
+
+networks:
+  app_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.22.0.0/24
