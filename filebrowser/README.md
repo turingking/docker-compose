@@ -8,6 +8,19 @@ sudo chmod +x /usr/local/bin/docker-compose
 ```
 安装完毕
 根据自己的配置，将本文件拷贝到合适的目录下，并命令行进入此目录，然后执行：
+```
 docker-compose up -d
+```
 之后访问unraid ip:8082 即可
+如果想停止容器，可以输入以下命令
+```
+docker-compose stop  #停止容器
+```
+如果想更新容器，可以先停止容器，修改配置，再启动容器
+```
+docker-compose stop 
+...#修改配置
+docker-compose up -d
+```
+
 想了解docker-compose 的可以访问 https://docs.docker.com/compose/compose-file/
