@@ -1,0 +1,32 @@
+# fb 文件浏览器 详情访问 https://hub.docker.com/r/80x86/filebrowser
+# unraid 用户安装 docker-compose 方法，来自https://forums.unraid.net/topic/91436-is-docker-compose-available-on-unraid/
+# 命令行输入下面两行：
+# curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+# sudo chmod +x /usr/local/bin/docker-compose
+# 安装完毕
+# 根据自己的配置，将本文件拷贝到合适的目录下，并命令行进入此目录，然后执行：
+# docker-compose up -d
+# 之后访问unraid ip:8082 即可
+# 想了解docker-compose 的可以访问 https://docs.docker.com/compose/compose-file/
+version: "3.8" #对应docker-compose版本号
+services:
+  filebrowser:
+    image: 80x86/filebrowser:2.9.3-amd64 #镜像名称,不能修改
+    deploy:
+      restart_policy:
+        condition: on-failure #失败重启,一般不需要修改
+        max_attempts: 3 #最多尝试重启3次,一般不需要修改
+    #devices:
+      #- "/dev/dri/renderD128:/dev/dri/renderD128" #硬件加速，根据需要取消注释
+    environment: #环境变量
+      - PUID=99  #用户id,一般不需要修改
+      - PGID=100 #用户组id，一般不需要修改
+      - WEB_PORT=8082 #web访问端口,根据需要修改
+      - FB_AUTH_SERVER_ADDR="127.0.0.1" #绑定服务地址，不需要改
+    ports:
+      - "8082:8082" #web访问端口要和上面 WEB_PORT 一致
+    volumes:
+      - /mnt/user/appdata/filebrowser/config:/config #配置文件目录,根据需要修改
+      - /mnt/user:/myfiles  #挂载文件目录，根据需要修改
+    tmpfs:
+      - /tmp #共享/tmp目录,不需要修改
